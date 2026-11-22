@@ -1,0 +1,99 @@
+/* ==========================================
+   JELLYFIN CUSTOM THEME
+   Navy Blue + Rounded Corners
+   Samsung TV Optimized
+   Video Playback Safe
+   ========================================== */
+
+/* 1. COLORS AND CORNER SETTINGS */
+:root {
+    --jf-card-borderRadius: 16px;
+}
+
+/* 2. NAVY BLUE INTERFACE */
+.backgroundContainer,
+.homePage,
+#indexPage {
+    background-color: #061A24 !important;
+}
+
+/* 3. NAVIGATION AND SIDE MENU */
+.skinHeader:not(.osdHeader),
+.mainDrawer {
+    background-color: #061A24 !important;
+}
+
+/* 4. MOVIE AND TV SHOW DETAIL PAGES */
+#itemDetailPage,
+.itemDetailPage,
+#itemDetailPage .detailPagePrimaryContainer,
+.itemDetailPage .detailPagePrimaryContainer,
+#itemDetailPage .detailPageWrapperContainer,
+.itemDetailPage .detailPageWrapperContainer,
+#itemDetailPage .detailRibbon,
+.itemDetailPage .detailRibbon,
+#itemDetailPage .detailPageSecondaryContainer,
+.itemDetailPage .detailPageSecondaryContainer,
+#itemDetailPage .detailPageSecondaryContent,
+.itemDetailPage .detailPageSecondaryContent,
+#itemDetailPage .detailSectionContent,
+.itemDetailPage .detailSectionContent {
+    background-color: #061A24 !important;
+}
+
+/* 5. HIDE DETAIL PAGE BACKDROPS */
+#itemDetailPage .backdropContainer,
+.itemDetailPage .backdropContainer {
+    display: none !important;
+}
+
+/* 6. ROUNDED MOVIE AND SHOW POSTERS */
+.cardScalable,
+.cardContent,
+.cardImageContainer,
+.cardOverlayContainer,
+.cardImage,
+.cardPadder,
+.blurhash-canvas,
+.visualCardBox,
+.itemDetailImage {
+    border-radius: 16px !important;
+}
+
+/* Keep images inside rounded corners */
+.cardContent,
+.cardImageContainer {
+    overflow: hidden !important;
+}
+
+/* 7. SAMSUNG TV SELECTION BORDER */
+.layout-tv .card.show-focus:not(.show-animation)
+.cardBox.visualCardBox,
+.layout-tv .card.show-focus:not(.show-animation)
+.cardBox:not(.visualCardBox) .cardScalable {
+    border-width: 4px !important;
+    border-style: solid !important;
+    border-color: transparent !important;
+    border-radius: 20px !important;
+}
+
+/* Blue-grey outline when selected */
+.layout-tv .card.show-focus:focus
+.cardBox.visualCardBox,
+.layout-tv .card.show-focus:focus
+.cardBox:not(.visualCardBox) .cardScalable {
+    border-color: #83A9BB !important;
+    border-radius: 20px !important;
+}
+
+/* 8. ROUNDED PROGRESS BARS */
+.itemProgressBar,
+.itemProgressBarForeground {
+    border-radius: 8px !important;
+}
+
+/* ==========================================
+   VIDEO PLAYBACK
+   No custom backgrounds or positioning
+   applied to the video player.
+   ========================================== */
