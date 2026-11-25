@@ -33,9 +33,21 @@
 /* Equal gutters keep adjacent panels outside the viewport at rest. */
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox {
     position: relative;
-    width: 86%;
-    max-width: 90vh;
+    width: 94%;
     margin: 0.75em auto !important;
+}
+
+/* Desktop arrows and touch start at Jellyfin's own safe-area inset.
+   TV focus centers the slot and uses the equal margins above. */
+.layout-desktop #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox,
+.layout-mobile #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox {
+    margin-left: 0 !important;
+}
+
+[dir="rtl"].layout-desktop #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox,
+[dir="rtl"].layout-mobile #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox {
+    margin-left: auto !important;
+    margin-right: 0 !important;
 }
 
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardPadder-overflowBackdrop {
@@ -43,7 +55,7 @@
 }
 
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardContent.cardImageContainer {
-    background-color: #0b2532;
+    background-color: #061a24;
     background-size: 0 0;
 }
 
@@ -71,12 +83,8 @@
     }
 
     #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardContent.cardImageContainer::before {
-        right: 3%;
-        width: 48%;
-        max-width: 23vw;
-        background-size: contain;
-        -webkit-mask-image: radial-gradient(ellipse, black 38%, transparent 75%);
-        mask-image: radial-gradient(ellipse, black 38%, transparent 75%);
+        width: 68%;
+        background-size: cover;
     }
 }
 
@@ -89,8 +97,8 @@
     left: 0;
     border-radius: inherit;
     pointer-events: none;
-    background: linear-gradient(0deg, rgba(6,26,36,.88), rgba(6,26,36,.23) 28%, transparent 57%),
-                linear-gradient(90deg, #061a24, rgba(6,26,36,.8) 28%, transparent 66%);
+    background: linear-gradient(90deg, #061a24 31%, rgba(6,26,36,.94) 36%,
+        rgba(6,26,36,.62) 45%, rgba(6,26,36,.2) 56%, rgba(6,26,36,0) 68%);
 }
 
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .itemProgressBar {
@@ -130,10 +138,10 @@
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox > .cardText {
     position: absolute;
     left: 5%;
-    right: 27%;
+    right: 49%;
     bottom: 1.5em;
     padding: 0;
-    text-align: start !important;
+    text-align: left !important;
     font-size: 1em;
     line-height: 1.25;
     color: #d0e0e7;
@@ -153,9 +161,22 @@
     pointer-events: auto;
 }
 
-[dir="rtl"] #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox > .cardText {
-    left: 27%;
-    right: 4%;
+/* Keep the caption legible when the TV exposes a native 4K viewport. */
+@media (min-width: 2400px) and (orientation: landscape) {
+    #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox > .cardText {
+        font-size: 1.4vw;
+    }
+
+    #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox > .cardText-first {
+        bottom: 4.4vw;
+        font-size: 3.5vw;
+    }
+}
+
+@media (orientation: portrait) {
+    #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox > .cardText {
+        right: 24%;
+    }
 }
 
 @media (max-width: 47.99em), (max-height: 24.99em) {
