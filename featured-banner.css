@@ -15,8 +15,11 @@
     clip: rect(0, 0, 0, 0);
 }
 
+/* Arrow destinations use the outer item's offsetWidth. One slot fills the
+   slider, including when Home occupies only part of the window. */
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard {
-    width: 100vw;
+    width: 100%;
+    flex: 0 0 100%;
 }
 
 /* Keep the scroller measurable while Jellyfin fetches the first shelf.
@@ -30,24 +33,52 @@
     visibility: hidden;
 }
 
-/* Equal gutters keep adjacent panels outside the viewport at rest. */
+/* Keep the frame and item on the same coordinate system. Safe-area
+   spacing belongs inside the measured slot, on the painted panel. */
+#homeTab .section0 > h2 ~ .emby-scroller:has([data-monitor="videoplayback,markplayed"]) {
+    --jf-featured-gutter: 3%;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Jellyfin indexes with integer offsetWidth, including on the trip back
+   from the last card. Avoid fractional drift in percentage-width panes. */
+#homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] {
+    width: 100%;
+    width: round(nearest, 100%, 1px);
+}
+
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox {
     position: relative;
-    width: 94%;
-    margin: 0.75em auto !important;
+    /* Older engines retain frame padding. Allow for it at each edge. */
+    margin: 1em 4% !important;
+    margin: 1em var(--jf-featured-gutter, 4%) !important;
+    margin-left: max(var(--jf-featured-gutter, 4%), env(safe-area-inset-left)) !important;
+    margin-right: max(var(--jf-featured-gutter, 4%), env(safe-area-inset-right)) !important;
 }
 
-/* Desktop arrows and touch start at Jellyfin's own safe-area inset.
-   TV focus centers the slot and uses the equal margins above. */
-.layout-desktop #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox,
-.layout-mobile #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox {
-    margin-left: 0 !important;
+/* Reserve a row for the existing desktop buttons. An empty shelf gets
+   neither the row nor new controls. */
+#homeTab .section0 > h2 ~ .emby-scrollbuttons:has(+ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard) {
+    position: relative;
+    justify-content: flex-end;
+    padding-top: 0.65em;
+    padding-bottom: 0.2em;
 }
 
-[dir="rtl"].layout-desktop #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox,
-[dir="rtl"].layout-mobile #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox {
-    margin-left: auto !important;
-    margin-right: 0 !important;
+#homeTab .section0 > h2 ~ .emby-scrollbuttons:has(+ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard) .emby-scrollbuttons-button {
+    width: 2.7em;
+    height: 2.7em;
+    margin: 0 0.2em;
+    padding: 0;
+    color: #edf5f9;
+    background-color: rgba(22, 46, 60, 0.88);
+    border: 1px solid rgba(131, 169, 187, 0.5);
+    border-radius: 50%;
+}
+
+#homeTab .section0 > h2 ~ .emby-scrollbuttons:has(+ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard) .emby-scrollbuttons-button:disabled {
+    opacity: 0.45;
 }
 
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardPadder-overflowBackdrop {
@@ -77,13 +108,14 @@
 
 @media (orientation: landscape) {
     #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardPadder-overflowBackdrop {
-        height: 48vh;
+        height: 53vh;
         min-height: 8.5rem;
         padding-bottom: 0;
     }
 
     #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardContent.cardImageContainer::before {
-        width: 68%;
+        width: 66%;
+        background-position: center 42%;
         background-size: cover;
     }
 }
@@ -97,8 +129,9 @@
     left: 0;
     border-radius: inherit;
     pointer-events: none;
-    background: linear-gradient(90deg, #061a24 31%, rgba(6,26,36,.94) 36%,
-        rgba(6,26,36,.62) 45%, rgba(6,26,36,.2) 56%, rgba(6,26,36,0) 68%);
+    background: linear-gradient(0deg, rgba(6,26,36,.50), rgba(6,26,36,0) 30%),
+        linear-gradient(90deg, #061a24 35%, rgba(6,26,36,.96) 39%,
+            rgba(6,26,36,.68) 47%, rgba(6,26,36,.22) 58%, rgba(6,26,36,0) 72%);
 }
 
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .itemProgressBar {
@@ -139,19 +172,21 @@
     position: absolute;
     left: 5%;
     right: 49%;
-    bottom: 1.5em;
+    bottom: 15%;
     padding: 0;
     text-align: left !important;
-    font-size: 1em;
-    line-height: 1.25;
+    font-size: 1.12em;
+    letter-spacing: 0.02em;
+    line-height: 1.35;
     color: #d0e0e7;
     text-shadow: 0 1px 3px #061a24;
     pointer-events: none;
 }
 
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox > .cardText-first {
-    bottom: 3.1rem;
-    font-size: 2.5rem;
+    bottom: calc(15% + 2rem);
+    letter-spacing: normal;
+    font-size: 2.9rem;
     font-weight: 700;
     line-height: 1.1;
     color: #fff;
@@ -168,8 +203,8 @@
     }
 
     #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox > .cardText-first {
-        bottom: 4.4vw;
-        font-size: 3.5vw;
+        bottom: calc(15% + 2.3vw);
+        font-size: 3.8vw;
     }
 }
 
@@ -182,7 +217,7 @@
 @media (max-width: 47.99em), (max-height: 24.99em) {
     #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox > .cardText-first {
         font-size: 1.6rem;
-        bottom: 2.85rem;
+        bottom: calc(15% + 1.75rem);
     }
 }
 
