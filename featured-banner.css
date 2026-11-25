@@ -106,6 +106,12 @@
     pointer-events: none;
 }
 
+/* Apply an optional per-item HD URL after Jellyfin loads the native card.
+   Unmapped titles inherit the image selected by the client. */
+#homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardContent.cardImageContainer:not([data-src])::before {
+    background-image: var(--jf-featured-art, inherit);
+}
+
 @media (orientation: landscape) {
     #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardPadder-overflowBackdrop {
         height: 53vh;

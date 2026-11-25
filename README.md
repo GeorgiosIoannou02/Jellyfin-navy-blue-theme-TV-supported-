@@ -34,6 +34,32 @@ The module uses the thumbnail or backdrop Jellyfin already chose, along with its
 
 Landscape panels use approximately 94% of the available shelf width and 53% of viewport height. Portrait layouts keep Jellyfin’s 16:9 frame. The lower-left caption sits above the 3 px progress line. Desktop users can page with the two native arrows above the artwork. TV users can move directly between panels with the directional pad.
 
+### Use HD artwork from your library
+
+The banner can load a second image directly from your server at a larger size. The per-title rule points to a particular item ID on **your** server. Installing the theme import alone keeps the native thumbnail.
+
+**For one movie**, open its details in Jellyfin Web and copy the item ID from `id=` in the address. In **Edit images**, check that it has a landscape **Thumb** or **Backdrop** with enough detail (ideally 1920 × 1080 or larger). Paste this rule **after the theme and banner imports** in Custom CSS. Replace both `ITEM_ID` values and the server address, including your Jellyfin base path if applicable.
+
+```css
+#homeTab .section0 .overflowBackdropCard[data-id="ITEM_ID"] {
+    --jf-featured-art: url("https://YOUR-SERVER/Items/ITEM_ID/Images/Thumb/0?maxWidth=2560&quality=95");
+}
+```
+
+Use `Backdrop/0` in place of `Thumb/0` if the backdrop is the better original. Open the image URL in your browser to check the actual picture before saving. Use the server address your TV can reach. The width parameter sets an upper limit; a small or blurry original still needs better source artwork.
+
+**For your library**, download [banner_art.py](tools/banner_art.py) and run it on a computer with Python 3. It uses the standard library. Enter a Jellyfin API key from **Dashboard → API Keys** at the hidden prompt.
+
+```sh
+python banner_art.py "https://YOUR-SERVER" > banner-hd.css
+```
+
+Paste the contents of `banner-hd.css` after the two imports, save, and reopen the client. The helper reads image metadata and writes CSS containing item IDs and image URLs. The API key stays on the computer that generates the file. Keep the generated file with your server configuration.
+
+The helper selects landscape sources at least 1280 × 720, prefers Full HD when available, and checks series artwork for episodes without a qualifying image. Other titles keep their ordinary thumbnails. Jellyfin still loads its native card image; mapped cards then request the larger source. Regenerate the rules after adding titles or replacing artwork. Removing the rules restores native artwork.
+
+In a 1920 × 1080 Chromium test against Jellyfin Web 10.11.11, the same TV-layout card loaded a 447 px wide thumbnail and a **1920 × 1080** banner image from the same library item. An unmapped movie retained its thumbnail. The five-item forward/back navigation tests passed with the mapping enabled on desktop and in TV layout. Physical Samsung hardware remains untested.
+
 ### How banner paging works
 
 Jellyfin calculates the next card index by rounding down `(scroll position + frame width) / outer card width`. With the earlier `100vw` slot, a 1,329 px frame inside a 1,601 px viewport produced index zero on the first Next click. Changing the inner `.cardBox` width or its margins did not change that calculation. Jellyfin also subtracts scroller padding when deciding whether an end button should be disabled. [Arrow destination calculation](https://github.com/jellyfin/jellyfin-web/blob/v10.11.11/src/elements/emby-scrollbuttons/utils.ts) · [Button state and padding](https://github.com/jellyfin/jellyfin-web/blob/v10.11.11/src/elements/emby-scrollbuttons/emby-scrollbuttons.js)
