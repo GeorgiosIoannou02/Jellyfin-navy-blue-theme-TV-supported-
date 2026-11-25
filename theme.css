@@ -11,7 +11,8 @@
 }
 
 /* 2. NAVY BLUE INTERFACE */
-.backgroundContainer,
+/* Let Jellyfin clear the shared background for video playback. */
+.backgroundContainer:not(.backgroundContainer-transparent),
 .homePage,
 #indexPage {
     background-color: #061A24 !important;
