@@ -30,9 +30,11 @@ A dark navy theme for Jellyfin Web and the Samsung TV client, with an optional c
 2. In the viewing account’s **Settings → Home**, set **Home screen section 1** to **Continue Watching**. Move **My Media** or **My Media (small)** to another slot, replacing the old Continue Watching entry. TV layout can prepend a library shelf when both My Media variants are absent.
 3. Save and reopen Home with a partially watched video. The first slot now shows wide, individually selectable panels. Use Left and Right to browse or Down to reach the next shelf.
 
-The module uses the thumbnail or backdrop Jellyfin already chose, along with its title, secondary line and progress bar. For an episode, the two lines can be the series and episode names. Artwork keeps its proportions and the frame crops its edges. A wide, high-resolution **Thumb** image gives the best result. Jellyfin can supply a smaller image, a different image type or a placeholder. CSS cannot request a higher resolution.
+The module uses the thumbnail or backdrop Jellyfin already chose, along with its title, secondary line and progress bar. For an episode, the two lines can be the series and episode names. The card builder requests a thumbnail-sized image based on the number of cards Jellyfin would normally display. The loader transfers that single URL from `data-src` to the card’s background. In the 1080p TV test, the loaded image measured 447 × 299 pixels. The card exposed no second, higher-resolution source. The banner fits the complete image into a bounded artwork area and reserves navy space for the title and episode information. Image quality depends on the asset Jellyfin delivers. [Card image selection](https://github.com/jellyfin/jellyfin-web/blob/v10.11.11/src/components/cardbuilder/cardBuilder.js) · [Image loader](https://github.com/jellyfin/jellyfin-web/blob/v10.11.11/src/components/images/imageLoader.js)
 
-Landscape artwork is 39% of viewport height with a minimum for short viewports. Portrait layouts keep Jellyfin’s 16:9 frame. A navy gradient sits beneath the progress bar and actions. TV focus uses the theme’s rounded blue-grey ring and a short glow transition. The shelf follows Jellyfin’s resume order and moves only through the client’s own navigation.
+Landscape panels use 48% of viewport height and a roughly 1.88:1 frame on a widescreen TV. Portrait layouts use Jellyfin’s 16:9 frame. Each card occupies a full viewport-width slot so the next panel stays offscreen when focused. The progress line is 3 px high. A static navy gradient and subtle shadow sit inside the existing TV focus treatment.
+
+The Continue Watching heading is visually hidden on engines that support CSS `:has()`. Older engines keep the heading because it shares its markup with My Media and only the following scroller identifies the video resume shelf. Horizontal navigation uses Jellyfin’s own controls on both.
 
 ## Gallery
 
@@ -66,8 +68,8 @@ The base stylesheet now applies navy to the shared background only while Jellyfi
 
 | Check | Result |
 | --- | --- |
-| TV layout in Chromium, Web 10.10.7 and 10.11.11 | At 1920 × 1080 the artwork measured 421 px high. Arrow keys moved across panels, down to My Media and back up. Enter opened details and Escape returned to Home. The focused ring measured 4 px with a 20 px radius. |
-| Desktop and mobile, Web 10.11.11 | At 1440 × 900 the artwork measured 351 px high. At 390 × 844 it measured 318 × 179 px. Both showed the native title, progress and play action. |
+| TV layout in Chromium, Web 10.10.7 and 10.11.11 | At 1920 × 1080 the banner interior measured 518 px high. Arrow keys moved across panels, down to My Media and back up. Enter opened details and Escape returned to Home. The focused ring measured 4 px with a 20 px radius. |
+| Desktop and mobile, Web 10.11.11 | At 1440 × 900 the banner measured 432 px high. At 390 × 844 it measured 335 × 189 px. Both showed the native title, progress and play action. |
 | Other Home shelves, Web 10.11.11 | My Media, Next Up and both Recently Added shelves retained the same measured card dimensions and corner radii with the module enabled and disabled. Putting My Media or Next Up first produced zero banner matches. An empty Continue Watching list reserved no banner space. |
 | Browsing, Web 10.11.11 | Opened the navigation drawer, movie and series detail pages, Home settings and the admin dashboard. |
 | Browser playback, Web 10.11.11 | A local video resumed with the shared background transparent. With test Intro and Outro metadata supplied to the browser, both native skip prompts appeared and sought to the expected timestamps. |

@@ -3,25 +3,83 @@
    Next Up uses a heading wrapper. Desktop inserts scroll buttons after the h2.
    Keep Jellyfin's scroller, card order, image URLs and native actions. */
 
-#homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard {
-    width: 86vw;
+/* The slot number alone cannot identify this heading on older clients.
+   Keep it accessible and let clients without relational selectors retain it. */
+#homeTab .section0 > h2:has(~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
 }
 
+#homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard {
+    width: 100vw;
+}
+
+/* Keep the scroller measurable while Jellyfin fetches the first shelf.
+   The empty shelf still occupies no space. */
+#homeTab .section0.verticalSection.hide {
+    display: block !important;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+/* Equal gutters keep adjacent panels outside the viewport at rest. */
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox {
     position: relative;
+    width: 86%;
+    max-width: 90vh;
+    margin: 0.75em auto !important;
 }
 
-/* Portrait layouts keep the native 16:9 padder. In short landscape
-   viewports leave enough room for both text lines and the play button. */
+#homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardPadder-overflowBackdrop {
+    background: #0b2532;
+}
+
+#homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardContent.cardImageContainer {
+    background-color: #0b2532;
+    background-size: 0 0;
+}
+
+/* Repaint the same loaded URL inside a bounded artwork area. All native
+   indicators stay in their original full-width container above the art. */
+#homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardContent.cardImageContainer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    background-image: inherit;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    pointer-events: none;
+}
+
 @media (orientation: landscape) {
     #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardPadder-overflowBackdrop {
-        height: 39vh;
+        height: 48vh;
         min-height: 8.5rem;
         padding-bottom: 0;
     }
+
+    #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardContent.cardImageContainer::before {
+        right: 3%;
+        width: 48%;
+        max-width: 23vw;
+        background-size: contain;
+        -webkit-mask-image: radial-gradient(ellipse, black 38%, transparent 75%);
+        mask-image: radial-gradient(ellipse, black 38%, transparent 75%);
+    }
 }
 
-/* Paint inside the artwork, beneath the native progress bar and controls. */
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardContent.cardImageContainer::after {
     content: "";
     position: absolute;
@@ -31,16 +89,24 @@
     left: 0;
     border-radius: inherit;
     pointer-events: none;
-    background: linear-gradient(to top, #061a24 0%, rgba(6, 26, 36, 0.91) 14%, rgba(6, 26, 36, 0.62) 35%, rgba(6, 26, 36, 0) 72%);
+    background: linear-gradient(0deg, rgba(6,26,36,.88), rgba(6,26,36,.23) 28%, transparent 57%),
+                linear-gradient(90deg, #061a24, rgba(6,26,36,.8) 28%, transparent 66%);
 }
 
+#homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .itemProgressBar {
+    height: 3px;
+    background: rgba(131,169,187,.2);
+}
+#homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .itemProgressBarForeground {
+    background-color: #83a9bb;
+}
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard .cardScalable {
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 4px 10px rgba(0,0,0,.32);
     transition: box-shadow 140ms ease-out;
 }
 
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard:focus .cardScalable {
-    box-shadow: 0 0 8px rgba(131, 169, 187, 0.55);
+    box-shadow: 0 0 8px rgba(131,169,187,.55);
 }
 
 /* Some Web clients enable focus zoom in TV layout. A panel this wide
@@ -63,9 +129,9 @@
    trailing edge for Jellyfin's hover and touch controls. */
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox > .cardText {
     position: absolute;
-    left: 4%;
+    left: 5%;
     right: 27%;
-    bottom: 1.1em;
+    bottom: 1.5em;
     padding: 0;
     text-align: start !important;
     font-size: 1em;
@@ -76,7 +142,7 @@
 }
 
 #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox > .cardText-first {
-    bottom: 2.7rem;
+    bottom: 3.1rem;
     font-size: 2.5rem;
     font-weight: 700;
     line-height: 1.1;
@@ -95,7 +161,7 @@
 @media (max-width: 47.99em), (max-height: 24.99em) {
     #homeTab .section0 > h2 ~ .emby-scroller [data-monitor="videoplayback,markplayed"] > .overflowBackdropCard > .cardBox > .cardText-first {
         font-size: 1.6rem;
-        bottom: 2.4rem;
+        bottom: 2.85rem;
     }
 }
 
